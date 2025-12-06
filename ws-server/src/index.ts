@@ -1,7 +1,9 @@
 import { WebSocketServer } from "ws";
 import { WS_EVENTS } from "./utils/events.js";
 
-const wss = new WebSocketServer({ port: 8080 });
+const PORT = (process.env.PORT as unknown as number) || 8080;
+
+const wss = new WebSocketServer({ port: PORT });
 
 const clients = new Map(); //userId -> ws
 const sockets = new Map(); //ws -> userId

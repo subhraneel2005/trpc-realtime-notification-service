@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { trpc } from "@/utils/trpcClient";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
+import Image from "next/image";
 
 const PFP_OPTIONS = [
   "https://cdn.pfps.gg/pfps/51247-mr-penis.jpeg",
@@ -72,10 +73,12 @@ export default function Signup() {
                       : "border-muted-foreground/30"
                   )}
                 >
-                  <img
+                  <Image
+                    width={150}
+                    height={150}
                     src={img}
                     alt="pfp"
-                    className="rounded-full w-16 h-16 object-cover"
+                    className="rounded-full object-cover"
                   />
                 </button>
               ))}
