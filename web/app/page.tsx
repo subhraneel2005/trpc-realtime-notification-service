@@ -1,22 +1,59 @@
+"use client";
 import { Button } from "@/components/ui/button";
+import { WS_CLIENT_EVENTS } from "@/types/events/wsEvents";
 import { trpc } from "@/utils/trpcClient";
 import Link from "next/link";
+import { useEffect, useState } from "react";
 
 export default function Home() {
-  const getLoggedInUser = async () => {
-    const token = localStorage.getItem("token");
+  const [token, setToken] = useState<string | null>(null);
+  const [isClient, setIsClient] = useState(false);
 
-    if (!token) return null;
+  // Handle client-side mounting
+  useEffect(() => {
+    setIsClient(true);
+    const storedToken = localStorage.getItem("token");
+    setToken(storedToken);
+  }, []);
 
-    if (typeof token !== "string") return null;
+  const { data, error, isLoading } = trpc.user.getById.useQuery(undefined, {
+    enabled: isClient && !!token, // Only run query when client-side and token exists
+  });
 
-    const { data, error, isLoading } = await trpc.user.getById.useQuery();
+  const wsMutation = trpc.ws.connectUserToWSS.useMutation();
 
-    if (isLoading) return <div>Loading user...</div>;
-    if (error) return <div>Error loading user: {error.message}</div>;
+  // Connect to WebSocket when component mounts and user data is available
+  useEffect(() => {
+    const connectUserToWSS = async () => {
+      if (!data?.id) return;
 
-    console.log("User Data: ", data);
-  };
+      try {
+        const res = await wsMutation.mutateAsync({
+          type: WS_CLIENT_EVENTS.CONNECTION,
+          userId: data.id,
+        });
+        console.log("WebSocket connection initiated: ", res);
+      } catch (err) {
+        console.error("WebSocket connection error: ", err);
+      }
+    };
+
+    connectUserToWSS();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [data?.id]); // Only reconnect when userId changes
+
+  // Show nothing during SSR
+  if (!isClient) return null;
+
+  // Show nothing if no token
+  if (!token) return null;
+
+  if (isLoading) return <div>Loading user...</div>;
+
+  if (error) return <div>Error loading user: {error.message}</div>;
+
+  console.log("User Data: ", data);
+
   return (
     <div className="min-h-screen flex-col w-full justify-center items-center flex">
       <h1 className="text-xl max-w-xl font-semibold">
