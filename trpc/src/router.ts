@@ -1,3 +1,4 @@
+import { postRouter } from "./routers/post";
 import { userRouter } from "./routers/user";
 import { wsRouter } from "./routers/ws";
 import { router } from "./trpc";
@@ -5,6 +6,7 @@ import { router } from "./trpc";
 export const appRouter = router({
   user: userRouter,
   ws: wsRouter,
+  post: postRouter,
 });
 
 export type AppRouter = typeof appRouter;

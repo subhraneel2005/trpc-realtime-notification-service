@@ -16,15 +16,20 @@ model User {
 
 model Post {
   id      String  @id @default(uuid())
-  user    User?   @relation(fields: [userId], references: [id])
-  userId  String?
+  user    User    @relation(fields: [userId], references: [id])
+  userId  String
   content String
   likes   Likes[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model Likes {
-  id         String  @id @default(cuid())
-  post       Post?   @relation(fields: [postId], references: [id])
-  postId     String?
-  likesCount Int     @default(0)
+  id     String @id @default(cuid())
+  post   Post   @relation(fields: [postId], references: [id])
+  postId String
+  userId String
+
+  @@unique([postId, userId])
 }

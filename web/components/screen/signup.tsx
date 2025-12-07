@@ -33,6 +33,7 @@ export default function Signup() {
 
     // save JWT
     localStorage.setItem("token", res.token);
+    localStorage.setItem("userId", res.user.id);
 
     alert("Signed up successfully!");
   };
