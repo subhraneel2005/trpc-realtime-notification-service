@@ -3,11 +3,14 @@ import { Button } from "@/components/ui/button";
 import { WS_CLIENT_EVENTS } from "@/types/events/wsEvents";
 import { trpc } from "@/utils/trpcClient";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 export default function Home() {
   const [token, setToken] = useState<string | null>(null);
   const [isClient, setIsClient] = useState(false);
+
+  const router = useRouter();
 
   // Handle client-side mounting
   useEffect(() => {
@@ -53,6 +56,7 @@ export default function Home() {
   if (error) return <div>Error loading user: {error.message}</div>;
 
   console.log("User Data: ", data);
+  router.push("/feed");
 
   return (
     <div className="min-h-screen flex-col w-full justify-center items-center flex">
