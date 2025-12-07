@@ -1,7 +1,7 @@
 "use client";
 
 import { trpc } from "@/utils/trpcClient";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import {
@@ -12,10 +12,13 @@ import {
 } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
+import { WS_CLIENT_EVENTS } from "@/types/events/wsEvents";
 
 export default function FeedScreen() {
   const [postContent, setPostContent] = useState("");
   const [userId, setUserId] = useState(() => localStorage.getItem("userId"));
+
+  const mutateLikePayloadToWSS = trpc.ws.likePostWSS.useMutation();
 
   const utils = trpc.useUtils();
 
@@ -24,7 +27,16 @@ export default function FeedScreen() {
   });
 
   const mutateLike = trpc.post.like.useMutation({
-    onSuccess: () => utils.post.getAll.invalidate(),
+    onSuccess: (data, variables) => {
+      mutateLikePayloadToWSS.mutate({
+        event: WS_CLIENT_EVENTS.LIKE_POST,
+        userId: userId!,
+        postId: variables.postId,
+        authorId: data.authorId!,
+      });
+
+      utils.post.getAll.invalidate();
+    },
   });
 
   const { data: posts, isLoading, isError } = trpc.post.getAll.useQuery();

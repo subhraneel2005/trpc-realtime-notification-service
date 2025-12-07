@@ -36,6 +36,33 @@ wss.on("connection", function connection(ws) {
     );
   });
 
+  ws.on("message", function likePost(data: string) {
+    const parsedData = JSON.parse(data);
+    if (parsedData.type === WS_EVENTS.LIKE_POST) {
+      const postId = parsedData.postId;
+      const userId = parsedData.userId;
+      const authorId = parsedData.authorId;
+
+      const notificationPayload = {
+        event: WS_EVENTS.NOTIFICATION,
+        notification: {
+          type: "like",
+          liked_by: userId,
+          postId: postId,
+          userId: userId,
+          authorId: authorId,
+          message: `${authorId}'s post has been liked by ${userId}`,
+        },
+      };
+      const authorSocket = clients.get(authorId);
+      if (authorSocket) {
+        authorSocket.send(JSON.stringify(notificationPayload));
+      }
+
+      ws.send(JSON.stringify(notificationPayload));
+    }
+  });
+
   ws.on("close", () => {
     const userId = sockets.get(ws);
     if (userId) {

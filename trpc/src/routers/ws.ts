@@ -25,4 +25,29 @@ export const wsRouter = router({
         console.log("Message from trpc server ", event.data);
       };
     }),
+  likePostWSS: privateProcedure
+    .input(
+      z.object({
+        event: z.string(),
+        userId: z.string(),
+        postId: z.string(),
+        authorId: z.string(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      const ws = new WebSocket(WS_SERVER_URL);
+      ws.onopen = () => {
+        ws.send(
+          JSON.stringify({
+            type: input.event,
+            userId: input.userId,
+            postId: input.postId,
+            authorId: input.authorId,
+          })
+        );
+      };
+      ws.onmessage = (event) => {
+        console.log("Message from trpc server ", event.data);
+      };
+    }),
 });

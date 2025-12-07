@@ -70,6 +70,7 @@ export const postRouter = router({
         return {
           success: false,
           message: "User has already liked this post",
+          authorId: null,
         };
       }
 
@@ -80,9 +81,19 @@ export const postRouter = router({
         },
       });
 
+      const postAuthorId = await ctx.prisma.post.findUnique({
+        where: {
+          id: postId,
+        },
+        select: {
+          userId: true,
+        },
+      });
+
       return {
         success: true,
         message: "Post liked successfully",
+        authorId: postAuthorId?.userId,
       };
     }),
 });
