@@ -71,6 +71,6 @@ then the ws server constructs a NOTIFICATION_EVENT to send to the post author cl
 
 ![initial like flow](https://raw.githubusercontent.com/subhraneel2005/trpc-realtime-notification-service/main/web/public/like0.png)
 
-![main e2e like flow](https://raw.githubusercontent.com/subhraneel2005/trpc-realtime-notification-service/main/web/public/mainLikeFLow.png)
+![main e2e like flow](https://raw.githubusercontent.com/subhraneel2005/trpc-realtime-notification-service/main/web/public/mainLikeFlow.png)
 
 ![outbound and inbound events diagram](https://raw.githubusercontent.com/subhraneel2005/trpc-realtime-notification-service/main/web/public/eventsFlowLike.png)
