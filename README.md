@@ -30,14 +30,17 @@
 ### flow1
 
 just after user1 likes user2's post there are two websocket events that are fired (1 inbound and 2 outbounds)
+![initial like flow](https://raw.githubusercontent.com/subhraneel2005/trpc-realtime-notification-service/main/web/public/like0.png)
 
 ### flow2
 
 at first the inbound event (user1's client to the server) goes and does 2 tasks. one to update likes count in the db and the other is to asynchronously send the LIKE_POST event to the ws server.
+![main e2e like flow](https://raw.githubusercontent.com/subhraneel2005/trpc-realtime-notification-service/main/web/public/mainLikeFlow.png)
 
 ### flow3
 
 then the ws server constructs a NOTIFICATION_EVENT to send to the post author client and a LIKE_ACK_EVENT to send to user1 client. therefore the ws server sends 2 outbound events (server to client)
+![outbound and inbound events diagram](https://raw.githubusercontent.com/subhraneel2005/trpc-realtime-notification-service/main/web/public/eventsFlowLike.png)
 
 ---
 
@@ -68,9 +71,3 @@ then the ws server constructs a NOTIFICATION_EVENT to send to the post author cl
 ---
 
 ![feed screen wireframe](https://raw.githubusercontent.com/subhraneel2005/trpc-realtime-notification-service/main/web/public/feedScreen.png)
-
-![initial like flow](https://raw.githubusercontent.com/subhraneel2005/trpc-realtime-notification-service/main/web/public/like0.png)
-
-![main e2e like flow](https://raw.githubusercontent.com/subhraneel2005/trpc-realtime-notification-service/main/web/public/mainLikeFlow.png)
-
-![outbound and inbound events diagram](https://raw.githubusercontent.com/subhraneel2005/trpc-realtime-notification-service/main/web/public/eventsFlowLike.png)
